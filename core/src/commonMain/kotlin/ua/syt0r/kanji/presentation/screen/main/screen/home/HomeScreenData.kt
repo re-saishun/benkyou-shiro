@@ -1,0 +1,83 @@
+package ua.syt0r.kanji.presentation.screen.main.screen.home
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.font.FontWeight
+import ua.syt0r.kanji.presentation.common.resources.icon.ExtraIcons
+import ua.syt0r.kanji.presentation.common.resources.icon.HomeOutline
+import ua.syt0r.kanji.presentation.common.resources.string.StringResolveScope
+import ua.syt0r.kanji.presentation.common.textDp
+import ua.syt0r.kanji.presentation.screen.main.MainNavigationState
+import ua.syt0r.kanji.presentation.screen.main.screen.home.screen.general_dashboard.GeneralDashboardScreen
+import ua.syt0r.kanji.presentation.screen.main.screen.home.screen.letters_dashboard.LettersDashboardScreen
+import ua.syt0r.kanji.presentation.screen.main.screen.home.screen.search.SearchScreen
+import ua.syt0r.kanji.presentation.screen.main.screen.home.screen.vocab_dashboard.VocabDashboardScreen
+
+enum class HomeScreenTab(
+    val analyticsName: String,
+    val iconContent: @Composable () -> Unit,
+    val titleResolver: StringResolveScope<String>,
+    val content: @Composable (MainNavigationState) -> Unit
+) {
+
+    GeneralDashboard(
+        analyticsName = "general_dashboard",
+        iconContent = { Icon(ExtraIcons.HomeOutline, null) },
+        titleResolver = { home.generalDashboardTabLabel },
+        content = { GeneralDashboardScreen(it) }
+    ),
+    LettersDashboard(
+        analyticsName = "letters_dashboard",
+        iconContent = {
+            Text(
+                text = "字",
+                fontSize = 18.textDp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        titleResolver = { home.lettersDashboardTabLabel },
+        content = { LettersDashboardScreen(mainNavigationState = it) }
+    ),
+    VocabDashboard(
+        analyticsName = "vocab_dashboard",
+        iconContent = {
+            Text(
+                text = "語",
+                fontSize = 18.textDp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        titleResolver = { home.vocabDashboardTabLabel },
+        content = { VocabDashboardScreen(mainNavigationState = it) }
+    ),
+    Search(
+        analyticsName = "search",
+        iconContent = { Icon(Icons.Default.Search, null) },
+        titleResolver = { home.searchTabLabel },
+        content = { SearchScreen(mainNavigationState = it) }
+    );
+
+    val buttonTestTag = name
+
+    companion object {
+        val VisibleTabs: List<HomeScreenTab> = entries
+    }
+
+}
+
+data class SyncIconState(
+    val loading: Boolean = false,
+    val indicator: SyncIconIndicator = SyncIconIndicator.Disabled
+)
+
+enum class SyncIconIndicator {
+    Disabled,
+    PendingUpload,
+    UpToDate,
+    Canceled,
+    Error,
+    Conflict
+}
